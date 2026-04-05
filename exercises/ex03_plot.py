@@ -79,7 +79,7 @@ def _():
 
     # Uncomment when ready:
     # ex_fig1.show()
-    return category_sales, pl, px
+    return category_sale, category_sales, pl, px
 
 
 @app.cell(hide_code=True)
@@ -183,7 +183,7 @@ def _(mo):
 
 
 @app.cell
-def _():
+def _(category_sale, category_sales, pl):
     # TODO: Create a dashboard with 2 subplots:
     # 1. Top plot: Bar chart of sales by category (reuse category_sales)
     # 2. Bottom plot: Bar chart of sales by region (reuse region_summary)
@@ -192,6 +192,22 @@ def _():
     # This is challenging - check the solution if you get stuck!
     from plotly.subplots import make_subplots
     import plotly.graph_objects as go
+
+    region_summary = category_sales.group_by('region').agg(pl.col("total_amount").sum().alias("total_sales"))
+
+    ex_fig5 = make_subplots(rows=2, cols=1, subplot_titles=["Sales by Category", "Sales by Region"])
+    ex_fig5.add_trace(go.Bar(x=category_sale['product_category'], y=category_sale['total_sales']), row=1, col=1)
+    ex_fig5.add_trace(go.Bar(x=region_summary['region'], y=region_summary['total_sales']), row=2, col=1)
+
+    ex_fig5.update_layout(
+            height=800,
+            width =800,
+            title_text="total sales by category and region",
+            showlegend=False,
+            title_font_size=24
+    )
+
+
 
 
     # Uncomment when ready:
